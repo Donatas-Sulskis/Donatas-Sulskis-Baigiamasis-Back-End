@@ -23,4 +23,26 @@ router.get("/dashboard", middleware.loggedIn, async (req, res) => {
   }
 });
 
+router.post("/dashboard", middleware.loggedIn, async (req, res) => {
+  if (!req.body.sugar || !req.userData.id) {
+    return res.status(400).send({ error: "Insufficient data provided" });
+  }
+
+  try {
+    const con = await mysql.createConnection(mysqlConfig);
+    const [data] = await con.execute(
+      `INSERT INTO sugars (user_id, sugar,timestamp) 
+      VALUES (${req.userData.id} , ${mysql.escape(req.body.sugar)}, NOW())`
+    );
+
+    con.end();
+
+    return res.send({ msg: "Successfully added sugar!" });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(500).send({ error: "DB error" });
+  }
+});
+
 module.exports = router;
