@@ -29,7 +29,7 @@ router.post("/register", async (req, res) => {
     return res.send({ msg: "Successfully registered an account" });
   } catch (e) {
     console.log(e);
-    res.status(500).send({ error: "DB error" });
+    res.status(500).send({ error: "Email already registered" });
   }
 });
 
