@@ -8,7 +8,7 @@ const { mysqlConfig, jwtSecret } = require("../config");
 
 router.post("/register", async (req, res) => {
   if (!req.body.email || !req.body.password) {
-    return res.status(400).send({ err: "Insufficient data provided" });
+    return res.status(400).send({ error: "Insufficient data provided" });
   }
 
   try {
@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
     con.end();
 
     if (data.affectedRows !== 1) {
-      return res.status(500).send({ err: "Error in DB" });
+      return res.status(500).send({ error: "Error in DB" });
     }
 
     return res.send({ msg: "Successfully registered an account" });
@@ -35,7 +35,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   if (!req.body.email || !req.body.password) {
-    return res.status(400).send({ err: "Insufficient data provided" });
+    return res.status(400).send({ error: "Insufficient data provided" });
   }
 
   try {
@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
     con.end();
 
     if (data.length !== 1) {
-      return res.status(400).send({ err: "Email or password is incorrect" });
+      return res.status(400).send({ error: "Email or password is incorrect" });
     }
 
     const passwordValidity = bcrypt.compareSync(
@@ -57,7 +57,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (!passwordValidity) {
-      return res.status(400).send({ err: "Email or password is incorrect" });
+      return res.status(400).send({ error: "Email or password is incorrect" });
     }
 
     const token = jwt.sign(
