@@ -45,4 +45,25 @@ router.post("/dashboard", middleware.loggedIn, async (req, res) => {
   }
 });
 
+router.delete("/dashboard", middleware.loggedIn, async (req, res) => {
+  if (!req.userData.id) {
+    return res.status(400).send({ error: "Insufficient data provided" });
+  }
+
+  try {
+    const con = await mysql.createConnection(mysqlConfig);
+    const [data] = await con.execute(
+      `DELETE FROM sugars WHERE user_id = ${req.userData.id}`
+    );
+
+    con.end();
+
+    return res.send({ msg: "Data cleared" });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(500).send({ error: "DB error" });
+  }
+});
+
 module.exports = router;
